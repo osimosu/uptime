@@ -1,0 +1,113 @@
+<div>
+  <h2 id="page-heading" data-cy="ServiceHeading">
+    <span>Services</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info mr-2" (click)="loadPage()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-service"
+        [routerLink]="['/service/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span> Create a new Service </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="services?.length === 0">
+    <span>No services found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="services && services.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="loadPage()">
+          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="status"><span>Status</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="name"><span>Name</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="url"><span>Url</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="created"><span>Created</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="updated"><span>Updated</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="user.id" *jhiHasAnyAuthority="'ROLE_ADMIN'"><span>User</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let service of services; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/service', service.id, 'view']">{{ service.id }}</a>
+          </td>
+          <td>
+            <fa-icon icon="thumbs-down" class="text-danger h4" [fixedWidth]="true" *ngIf="service.status === 'FAIL'"></fa-icon>
+            <fa-icon icon="thumbs-up" class="text-success h4" [fixedWidth]="true" *ngIf="service.status === 'OK'"></fa-icon>
+          </td>
+          <td>{{ service.name }}</td>
+          <td>
+            <a href="{{ service.url }}" target="_blank">{{ service.url }}</a>
+          </td>
+          <td>{{ service.created | formatMediumDatetime }}</td>
+          <td>{{ service.updated | formatMediumDatetime }}</td>
+          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
+            {{ service.user?.id }}
+          </td>
+          <td class="text-right">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/service', service.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/service', service.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(service)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="services && services.length > 0">
+    <div class="row justify-content-center">
+      <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+    </div>
+
+    <div class="row justify-content-center">
+      <ngb-pagination
+        [collectionSize]="totalItems"
+        [(page)]="ngbPaginationPage"
+        [pageSize]="itemsPerPage"
+        [maxSize]="5"
+        [rotate]="true"
+        [boundaryLinks]="true"
+        (pageChange)="loadPage($event)"
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>

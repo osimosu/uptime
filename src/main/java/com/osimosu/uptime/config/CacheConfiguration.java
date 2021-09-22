@@ -48,6 +48,7 @@ public class CacheConfiguration {
             createCache(cm, com.osimosu.uptime.domain.User.class.getName());
             createCache(cm, com.osimosu.uptime.domain.Authority.class.getName());
             createCache(cm, com.osimosu.uptime.domain.User.class.getName() + ".authorities");
+            createCache(cm, com.osimosu.uptime.domain.Service.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

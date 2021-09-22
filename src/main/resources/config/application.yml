@@ -180,3 +180,6 @@ jhipster:
 # ===================================================================
 
 # application:
+
+polling-interval-ms: 30000
+polling-timeout-ms: 3000

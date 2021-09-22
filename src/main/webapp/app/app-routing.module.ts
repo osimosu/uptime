@@ -15,6 +15,11 @@ const LAYOUT_ROUTES = [navbarRoute, ...errorRoute];
     RouterModule.forRoot(
       [
         {
+          path: '',
+          redirectTo: '/service',
+          pathMatch: 'full',
+        },
+        {
           path: 'admin',
           data: {
             authorities: [Authority.ADMIN],

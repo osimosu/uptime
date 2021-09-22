@@ -1,0 +1,18 @@
+
+entity Service {
+    status Status
+    name String required
+    Url String required unique pattern(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)
+    created Instant required
+    updated Instant required
+}
+
+enum Status {
+    OK, FAIL
+}
+
+relationship ManyToOne {
+    Service{user required} to User
+}
+
+paginate * with pagination
